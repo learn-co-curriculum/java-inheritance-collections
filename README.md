@@ -1,8 +1,9 @@
-# Collections and Dynamic Binding
+# Collections and Inheritance
 
 ## Learning Goals
 
 - Show how to iterate through a collection with inherited subclasses.
+- Discuss dynamic binding when iterating.
 
 ## Introduction
 
