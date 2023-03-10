@@ -2,25 +2,16 @@
 
 ## Learning Goals
 
-- Step through the iterations of a `List` of `Person` objects.
-- Add a subclass to the `Person` objects and look at the dynamic binding.
-- 
+- Show how to iterate through a collection with inherited subclasses.
 
 ## Introduction
 
-In the last lesson, we learned about the `List` interface and one of its most
-popular implementations, the `ArrayList`. We'll continue looking at this
-collection and how to iterate through a `List` by stepping through the code. We
-will also expand on our `Person` object we worked with in the last lesson.
+In this lesson, we will review iterating through a `List` with an inheritance
+structure.
 
-Fork and clone this lesson so you can see the `ListExample` class and the
-`Person` class. These two classes are the same ones we left off with in the last
-lesson. Code along with us in this lesson to further your understanding of
+Fork and clone this lesson. You will see a `ListExample` class and a `Person`
+class. Code along with us in this lesson to further your understanding of
 collections and dynamic binding.
-
-## Iterating Through a List
-
-Let's make the following changes to the `ListExample` class:
 
 ```java
 import java.util.ArrayList;
@@ -28,98 +19,72 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ListExample {
+    
     public static void main(String[] args) {
         List<Person> personList = new ArrayList<>(Arrays.asList(
-                new Person("Lily Aldrin", 27),
-                new Person("Marshall Eriksen", 27),
-                new Person("Robin Scherbatsky", 25)
+                new Person("Winston Bishop", 40),
+                new Person("Jessica Day", 41)
         ));
 
-        // Iterate through the Person List to print the names of each Person
         for (Person person : personList) {
-            System.out.println(person.getName());
+            System.out.println(person.getCareer());
         }
     }
 }
 ```
 
-Let's iterate through the `personList` we have created to print the names of
-each person. Notice, we can use a `for` loop here since we know how many people
-are in our list. We can also use an enhanced `for` loop here too - just like we
-would for an array.
-
-Set a breakpoint at the `for` loop: `for (Person person : personList)` and run
-the debugger. If we look at the Java Visualizer, we can see how the `ArrayList`
-is stored in memory. This should look the same from the last lesson.
-
-![arraylist-in-memory](https://curriculum-content.s3.amazonaws.com/java-mod-3/list/java-visualizer-arraylist-personlist.png)
-
-Notice how each element in the `ArrayList` points to a `Person` object. We can
-also see this if we look at the debug console:
-
-![arraylist-debugger](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-arraylist-personlist.png)
-
-Let's use the step-over action to see which `Person` object gets assigned to
-the variable `person` first:
-
-![first-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-arraylist-basic-personlist-iteration-1.png)
-
-As we can see, the `person` variable gets assigned to the first element in the
-`personList` when we iterate through. Iterating through an `ArrayList` is
-similar to iterating through an array - we will go through each element in the
-list in the order they were inserted. Let's use the step-into action now to see
-what happens when we call `person.getName()`:
-
-![first-iteration-getname](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-getname-1.png)
-
-We see that the execution jumps over to the `Person` class and calls the
-`getName()` method, which will return "Lily Aldrin" in this case. If we
-step-over, we'll be taken back to the `ListExample` class. When we step-over
-again, we'll see that the name is printed to the console:
-
-```text
-Lily Aldrin
-```
-
-If we continue stepping through this code, we'll notice that the `person`
-variable gets assigned to the `Person` object with "Marshall Eriksen" next:
-
-![second-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-arraylist-basic-personlist-iteration-2.png)
-
-We can use the step-into action again to see the execution jump to the `Person`
-class and call the `getName()` instance method. This will then return the
-value of `name` before hopping back to the loop in the `ListExample` class,
-just as we saw before.
-
-When we step-over one more time, we'll see the `person` variable get assigned
-to the last `Person` object in the `ArrayList`:
-
-![third-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-arraylist-basic-personlist-iteration-3.png)
-
-If we resume the program, we'll see the following output in the console:
-
-```text
-Lily Aldrin
-Marshall Eriksen
-Robin Scherbatsky
-```
-
-## Adding a Subclass
-
-Let's mix things up a bit! Go ahead and add the following method to the Person
-class:
-
 ```java
+public class Person {
+    
+    private String name;
+    private int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public String getCareer() {
         return "I'm just a person!";
     }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
 ```
+
+## Adding a Subclass
 
 Now we know that people can have various careers. To keep things simple, let's
 create a `Teacher` class that will inherit the `Person` class:
 
 ```java
 public class Teacher extends Person {
+
+    public Teacher(String name, int age) {
+        super(name, age);
+    }
 
     @Override
     public String getCareer() {
@@ -142,18 +107,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ListExample {
+    
     public static void main(String[] args) {
-
-        Person person1 = new Person();
-        person1.setName("Winston Bishop");
-        person1.setAge(40);
-        Teacher teacher1 = new Teacher();
-        teacher1.setName("Jessica Day");
-        teacher1.setAge(41);
-
         List<Person> personList = new ArrayList<>(Arrays.asList(
-            person1,
-            teacher1
+                new Person("Winston Bishop", 40),
+                new Teacher("Jessica Day", 41)
         ));
 
         for (Person person : personList) {
@@ -163,27 +121,21 @@ public class ListExample {
 }
 ```
 
-Let's iterate through a list again! But this time, we'll call our new
-`getCareer()` method.
-
-Also notice how we created a `Person` object and a `Teacher` object and then
-added both to the `personList` this time. We'll set a breakpoint at the `for`
-loop, like we did last time, to see what this looks like in memory:
+Let's step through the iteration of this list. We'll set a breakpoint at the
+`for` loop to see what this looks like in memory:
 
 ![arraylist-in-memory](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/java-visualizer-arraylist-personteacherlist.png)
 
-Since we have declared a `Person` object and a `Teacher` object and then added
-them to the `List`, each element in the `List` will point to the respective
-objects in the order that they were inserted. We can see this in the debugger as
-well:
+We can look at what is in the `List` by opening up the debug console as well:
 
 ![arraylist-debugger](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-arraylist-person-teacher-list.png)
 
-Like before, we'll use the step-over action. When we do so, we expect the
+We'll use the step-over action next to see what the `person` variable gets
+assigned to. Since we are a little more familiar with lists, we expect the
 `person` variable to be assigned to the first element in the `ArrayList`, which
-is `person1`:
+is the `Person` with the name "Winston Bishop":
 
-![first-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/visualizer-debugger-person1.png)
+![first-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-arraylist-personlist-iteration-2.png)
 
 Now let's step-into the `getCareer()` method:
 
@@ -199,14 +151,14 @@ I'm just a person!
 ```
 
 Let's move onto the second iteration. This time, the `person` variable will be
-assigned to the second element in the `ArrayList`, which is `teacher1`:
+assigned to the second element in the `ArrayList`, which is the `Teacher` with
+the name "Jessica Day":
 
-![second-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/visualizer-debugger-teacher1.png)
+![second-iteration](https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/debugger-arraylist-personlist-iteration-3.png)
 
-We might be thinking... wait, `person` is of type `Person` and `teacher1` is of
-type `Teacher`. And our `List` is expecting `Person` elements. Is this allowed?
-Remember, the `Teacher` class **extends** the `Person` class since a `Teacher`
-is a `Person` too. This is completely valid to have `Person person = teacher1;`
+Since a `Teacher` is a `Person` too because `Teacher` **extends** the `Person`
+class, it is completely valid to have the `person` variable set to a `Teacher`
+object!
 
 So what happens when we step-into the `getCareer()` method this time if `person`
 is assigned to a `Teacher` object?
@@ -235,21 +187,20 @@ Consider the following code but do not modify the `ListExample` class at this
 time.
 
 ```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class ListExample {
+    
     public static void main(String[] args) {
-
-        Person person1 = new Person();
-        person1.setName("Winston Bishop");
-        person1.setAge(40);
-        Teacher teacher1 = new Teacher();
-        teacher1.setName("Jessica Day");
-        teacher1.setAge(41);
-
+        
         // DO NOT MAKE THIS CHANGE
-        List<Teacher> teacherList = new ArrayList<>();
-        teacherList.add(person1);
-        teacherList.add(teacher1);
-
+        List<Teacher> teacherList = new ArrayList<>(Arrays.asList(
+                new Person("Winston Bishop", 40),
+                new Teacher("Jessica Day", 41)
+        ));
+        
         for (Teacher teacher : teacherList) {
             System.out.println(teacher.getCareer());
         }
@@ -276,6 +227,10 @@ class:
 ```java
 public class PoliceOfficer extends Person {
 
+    public PoliceOfficer(String name, int age) {
+        super(name, age);
+    }
+
     @Override
     public String getCareer() {
         return "I'm a police officer!";
@@ -291,18 +246,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ListExample {
+
     public static void main(String[] args) {
-
-        Person person1 = new PoliceOfficer();
-        person1.setName("Winston Bishop");
-        person1.setAge(40);
-        Person teacher1 = new Teacher();
-        teacher1.setName("Jessica Day");
-        teacher1.setAge(41);
-
         List<Person> personList = new ArrayList<>(Arrays.asList(
-            person1,
-            teacher1
+                new PoliceOfficer("Winston Bishop", 40),
+                new Teacher("Jessica Day", 41)
         ));
 
         for (Person person : personList) {
@@ -320,7 +268,8 @@ public class ListExample {
      <p style="margin-top: -18px"><code>I'm a teacher!</code></p>
   </p>
 
-  <p>When we iterate through the loop the first time, we encounter <code>Person</code> as a <code>PoliceOfficer</code> instead of just a <code>Person</code></p>
-  <p>This will then exemplify dynamic binding again as it will execute the <code>getCareer()</code> method in the <code>PoliceOfficer</code> class instead.</p>
+  <p>When we first iterate through the loop, the <code>person</code> variable gets assigned to the first element in the list, which happens to be an instance of <code>PoliceOfficer</code></p>
+  <img src="https://curriculum-content.s3.amazonaws.com/java-mod-3/collections-dynamic-binding/java-visualizer-police-officer.png" alt="first-iteration-police-officer">
+  <p>Java will then use dynamic binding to implement the <code>getCareer()</code> method from the <code>PoliceOfficer</code> class since it overrides the method in the <code>Person</code> class.</p>
 
 </details>
